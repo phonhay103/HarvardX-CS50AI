@@ -12,3 +12,6 @@ https://cs50.harvard.edu/ai/2020/
   - Pagerank
 - Optimization
   - Crossword
+- Learning
+  - Shopping
+  - Nim 
