@@ -99,7 +99,9 @@ class CrosswordCreator():
         (Remove any values that are inconsistent with a variable's unary
          constraints; in this case, the length of the word.)
         """
-        raise NotImplementedError
+        for var, words in self.domains.items():
+            self.domains[var] = [word for word in words if len(word) == var.length]
+
 
     def revise(self, x, y):
         """
@@ -110,7 +112,25 @@ class CrosswordCreator():
         Return True if a revision was made to the domain of `x`; return
         False if no revision was made.
         """
-        raise NotImplementedError
+        revised = False
+        overlap = self.crossword.overlaps[(x, y)]
+
+        if overlap:
+            for word_x in self.domains[x].copy():
+                is_consistent = False
+
+                # Check if `x` and `y` are consistent
+                for word_y in self.domains[y]:
+                    if word_x[overlap[0]] == word_y[overlap[1]]:
+                        is_consistent = True
+                        break
+
+                # if not, remove inconsistent word from domain of `x`
+                if not is_consistent:
+                    self.domains[x].remove(word_x)
+                    revised = True
+
+        return revised
 
     def ac3(self, arcs=None):
         """
@@ -121,7 +141,22 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
-        raise NotImplementedError
+        if arcs:
+            queue = arcs.copy()
+        else:
+            queue = list(self.crossword.overlaps.keys())
+
+        while queue:
+            x, y = queue.pop(0)
+
+            if self.revise(x, y):
+                if len(self.domains[x]) == 0:
+                    return False
+                    
+                for z in self.crossword.neighbors(x) - {y}:
+                    queue.append((z, x))
+
+        return True
 
     def assignment_complete(self, assignment):
         """
@@ -178,19 +213,22 @@ def main():
     structure = sys.argv[1]
     words = sys.argv[2]
     output = sys.argv[3] if len(sys.argv) == 4 else None
-
+    
     # Generate crossword
     crossword = Crossword(structure, words)
     creator = CrosswordCreator(crossword)
-    assignment = creator.solve()
+    # assignment = creator.solve()
 
-    # Print result
-    if assignment is None:
-        print("No solution.")
-    else:
-        creator.print(assignment)
-        if output:
-            creator.save(assignment, output)
+    # creator.enforce_node_consistency()
+    # creator.ac3()
+
+    # # Print result
+    # if assignment is None:
+    #     print("No solution.")
+    # else:
+    #     creator.print(assignment)
+    #     if output:
+    #         creator.save(assignment, output)
 
 
 if __name__ == "__main__":
