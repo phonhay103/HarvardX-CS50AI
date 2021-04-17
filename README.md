@@ -19,3 +19,6 @@ This course explores the concepts and algorithms at the foundation of modern art
   - Nim 
 - Neural Networks
   - Traffic  
+- Language
+  - Parser
+  - Questions
