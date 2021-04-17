@@ -17,3 +17,5 @@ This course explores the concepts and algorithms at the foundation of modern art
 - Learning
   - Shopping
   - Nim 
+- Neural Networks
+  - Traffic  
