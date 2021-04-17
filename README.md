@@ -1,4 +1,4 @@
-# Projects of the course HarvardX CS50AI
+# Projects of the course HarvardX CS50AI 2020
 ## CS50’s Introduction to Artificial Intelligence with Python
 
 ### Link: https://cs50.harvard.edu/ai/2020/
